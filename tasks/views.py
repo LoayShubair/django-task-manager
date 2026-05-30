@@ -1,3 +1,12 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Task
+
+
+@login_required
+def task_list(request):
+    tasks = Task.objects.filter(owner=request.user)
+    return render(request, "tasks/task_list.html", {"tasks": tasks})
+
 
 # Create your views here.
