@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Task Manager</title>
+        <style>
+            body {
+                font-family: Arial;
+                margin: 40px;
+            }
+            a {
+                text-decoration: none;
+                margin-right: 10px;
+            }
+            .container {
+                max-width: 800px;
+                margin: auto;
+            }
+
+        </style>
+
+    </head>
+    <body>
+        <div class="container">
+            <h1>Task Manager</h1>
+            <a href="{% url 'task_list' %}">Tasks</a>
+            <a href="{% url 'task_create' %}">New Task</a>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+            <hr>
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+
+</html>

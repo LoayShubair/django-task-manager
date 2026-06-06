@@ -18,7 +18,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from tasks.views import task_list
+from tasks.views import (
+    task_list,
+    task_detail,
+    task_create,
+    task_edit,
+    task_delete,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -27,4 +33,8 @@ urlpatterns = [
     ),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("", task_list, name="task_list"),
+    path("task/<int:pk>/", task_detail, name="task_detail"),
+    path("task/create/", task_create, name="task_create"),
+    path("task/<int:pk>/edit/", task_edit, name="task_edit"),
+    path("task/<int:pk>/delete/", task_delete, name="task_delete"),
 ]

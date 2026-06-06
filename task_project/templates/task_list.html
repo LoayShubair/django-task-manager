@@ -1,6 +1,17 @@
-<h1>My Tasks</h1>
-{% for task in tasks %}
-    <p>
-        {{ task.title}} - {{ task.status}}
-    </p>
+{% extends 'base.html' %}
+{% block content %}
+<h2>My Tasks</h2>
+<a href="{% url 'task_create' %}">Create Task</a>
+<ul>
+    {% for task in tasks %}
+    <li>
+        <a href="{% url 'task_detail' task.id %}">
+            {{ task.title }}
+        </a>
+        ({{ task.status }})
+        <a href="{% url 'task_edit' task.id %}">Edit</a>
+        <a href="{% url 'task_delete' task.id %}">Delete</a>
+    </li>
     {% endfor %}
+</ul>
+{% endblock %}
