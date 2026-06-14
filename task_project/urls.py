@@ -19,22 +19,44 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from tasks.views import (
-    task_list,
-    task_detail,
-    task_create,
-    task_edit,
-    task_delete,
+    TaskListView,
+    TaskDetailView,
+    TaskCreateView,
+    TaskUpdateView,
+    TaskDeleteView,
 )
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
-        "login/", auth_views.LoginView.as_view(template_name="login.html"), name="login"
+        "login/",
+        auth_views.LoginView.as_view(template_name="login.html"),
+        name="login",
     ),
-    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
-    path("", task_list, name="task_list"),
-    path("task/<int:pk>/", task_detail, name="task_detail"),
-    path("task/create/", task_create, name="task_create"),
-    path("task/<int:pk>/edit/", task_edit, name="task_edit"),
-    path("task/<int:pk>/delete/", task_delete, name="task_delete"),
+    path(
+        "logout/",
+        auth_views.LogoutView.as_view(),
+        name="logout",
+    ),
+    path("", TaskListView.as_view(), name="task_list"),
+    path(
+        "task/<int:pk>/",
+        TaskDetailView.as_view(),
+        name="task_detail",
+    ),
+    path(
+        "task/create/",
+        TaskCreateView.as_view(),
+        name="task_create",
+    ),
+    path(
+        "task/<int:pk>/edit/",
+        TaskUpdateView.as_view(),
+        name="task_edit",
+    ),
+    path(
+        "task/<int:pk>/delete/",
+        TaskDeleteView.as_view(),
+        name="task_delete",
+    ),
 ]
