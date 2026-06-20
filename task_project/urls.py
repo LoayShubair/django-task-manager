@@ -24,6 +24,8 @@ from tasks.views import (
     TaskCreateView,
     TaskUpdateView,
     TaskDeleteView,
+    TaskListAPI,
+    TaskDetailAPI,
 )
 
 urlpatterns = [
@@ -58,5 +60,15 @@ urlpatterns = [
         "task/<int:pk>/delete/",
         TaskDeleteView.as_view(),
         name="task_delete",
+    ),
+    path(
+        "api/tasks/",
+        TaskListAPI.as_view(),
+        name="api_tasks",
+    ),
+    path(
+        "api/tasks/<int:pk>/",
+        TaskDetailAPI.as_view(),
+        name="api_task_detail",
     ),
 ]

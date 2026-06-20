@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (
     ListView,
@@ -8,7 +9,13 @@ from django.views.generic import (
     DeleteView,
 )
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+
 from .models import Task
+from .serializers import TaskSerializer
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -56,3 +63,19 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return Task.objects.filter(owner=self.request.user)
+
+
+class TaskListAPI(APIView):
+
+    def get(self, request):
+        tasks = Task.objects.filter(owner=request.user)
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class TaskDetailAPI(APIView):
+
+    def get(self, request, pk):
+        task = get_object_or_404(Task, pk=pk, owner=request.user)
+        serializer = TaskSerializer(task)
+        return Response(serializer.data, status=status.HTTP_200_OK)
