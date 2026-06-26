@@ -16,6 +16,11 @@ from rest_framework import status
 
 from .models import Task
 from .serializers import TaskSerializer
+from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+
+from .permissions import IsOwner
+from .pagination import TaskPagination
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -65,17 +70,16 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
         return Task.objects.filter(owner=self.request.user)
 
 
-class TaskListAPI(APIView):
+class TaskViewSet(viewsets.ModelViewSet):
+    serializer_class = TaskSerializer
+    permission_classes = [IsOwner]
+    pagination_class = TaskPagination
 
-    def get(self, request):
-        tasks = Task.objects.filter(owner=request.user)
-        serializer = TaskSerializer(tasks, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["status"]
 
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.request.user)
 
-class TaskDetailAPI(APIView):
-
-    def get(self, request, pk):
-        task = get_object_or_404(Task, pk=pk, owner=request.user)
-        serializer = TaskSerializer(task)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)

@@ -18,15 +18,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from rest_framework.routers import DefaultRouter
 from tasks.views import (
     TaskListView,
     TaskDetailView,
     TaskCreateView,
     TaskUpdateView,
     TaskDeleteView,
-    TaskListAPI,
-    TaskDetailAPI,
+    TaskViewSet,
 )
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+router = DefaultRouter()
+router.register(r"api/tasks", TaskViewSet, basename="tasks")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -62,13 +69,14 @@ urlpatterns = [
         name="task_delete",
     ),
     path(
-        "api/tasks/",
-        TaskListAPI.as_view(),
-        name="api_tasks",
+        "api/token/",
+        TokenObtainPairView.as_view(),
+        name="token_obtain_pair",
     ),
     path(
-        "api/tasks/<int:pk>/",
-        TaskDetailAPI.as_view(),
-        name="api_task_detail",
+        "api/token/refresh/",
+        TokenRefreshView.as_view(),
+        name="token_refresh",
     ),
 ]
+urlpatterns += router.urls
